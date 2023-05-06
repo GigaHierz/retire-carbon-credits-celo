@@ -141,7 +141,7 @@ export default function Home() {
 
 ---
 
-### Redeem Tokens form a PoolContract (e.g. NCT)
+### Redeem Tokens from a PoolContract (e.g. NCT)
 
 To retire Carbon Credits, we need pool tokens (e.g., NCTs) or carbon reference tokens like TCO2s. We can get them from the Toucan Faucet. In this example we will get NCT, as theses are the tokens, you can buy in an exchange like Ubeswap.
 
