@@ -3,15 +3,16 @@ import "@rainbow-me/rainbowkit/styles.css";
 import type { AppProps } from "next/app";
 import {
   connectorsForWallets,
-  RainbowKitProvider
+  RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
-import { 
-  metaMaskWallet, 
-  omniWallet, 
-  walletConnectWallet 
+import {
+  metaMaskWallet,
+  omniWallet,
+  walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { polygon, polygonMumbai } from "wagmi/chains";
 
 // Import known recommended wallets
 import { Valora, CeloWallet, CeloDance } from "@celo/rainbowkit-celo/wallets";
@@ -20,10 +21,18 @@ import { Valora, CeloWallet, CeloDance } from "@celo/rainbowkit-celo/wallets";
 import { Alfajores, Celo } from "@celo/rainbowkit-celo/chains";
 
 import Layout from "../components/Layout";
+import { log } from "console";
 
 const { chains, provider } = configureChains(
-  [Alfajores, Celo],
-  [jsonRpcProvider({ rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }) })]  
+  [Alfajores, Celo, polygonMumbai, polygon],
+  [
+    jsonRpcProvider({
+      rpc: (chain) =>
+        chain.id === 80001 || chain.id === 137
+          ? { http: "https://matic-mainnet.chainstacklabs.com" }
+          : { http: "https://forno.celo.org" },
+    }),
+  ]
 );
 
 const connectors = connectorsForWallets([
@@ -55,7 +64,7 @@ function App({ Component, pageProps }: AppProps) {
         </Layout>
       </RainbowKitProvider>
     </WagmiConfig>
-  )
+  );
 }
 
 export default App;

@@ -15,6 +15,7 @@ export default function Home() {
       "NCT",
       parseEther("1")
     );
+    console.log(redeemedTokenAddress);
     redeemedTokenAddress && setTco2address(redeemedTokenAddress[0].address);
   };
 

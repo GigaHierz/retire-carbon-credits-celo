@@ -1,10 +1,8 @@
-
-
 # Retiring Carbon Credits on Celo using Toucan SDK
 
 Retire Carbon Credits on Celo using ToucanSDK
 Learn how to make your dApp climate positive with a few lines of code.
-Climate change is real, and thinking of our carbon footprint when building software should be part of the planning process as much as thinking about the architecture. One blockchain that is leading in this regard is Celo blockchain, and they are even offsetting more carbon than they are producing. So, if your choice of network for your application is Celo, you already made a step in the right direction. But other actions can increase your or your users carbon footprint and, in this tutorial, you will learn how to account for that in a few lines of code and create a climate positive app. If you are new to carbon credit retirements and what kind of infrastructure tools Toucan provides, make sure to read up on it in their blog.
+Climate change is real, and thinking of our carbon footprint when buildlsing software should be part of the planning process as much as thinking about the architecture. One blockchain that is leading in this regard is Celo blockchain, and they are even offsetting more carbon than they are producing. So, if your choice of network for your application is Celo, you already made a step in the right direction. But other actions can increase your or your users carbon footprint and, in this tutorial, you will learn how to account for that in a few lines of code and create a climate positive app. If you are new to carbon credit retirements and what kind of infrastructure tools Toucan provides, make sure to read up on it in their blog.
 
 ### Prerequisites:
 
