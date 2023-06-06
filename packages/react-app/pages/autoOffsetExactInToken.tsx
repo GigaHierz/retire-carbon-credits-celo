@@ -1,13 +1,15 @@
 import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
 import { useProvider, useSigner } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper2.json";
+import offsetHelper from "../abis/OffsetHelper.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
 
 export default function AutoOffsetExactInToken() {
-  const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92";
-  const depositedToken = "0xef4229c8c3250C675F21BCefa42f58EfbfF6002a";
+  // const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
+  const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo
   const amount = parseEther("1");
   const provider = useProvider();
   const { data: signer, isError } = useSigner();
@@ -39,10 +41,10 @@ export default function AutoOffsetExactInToken() {
       amount,
       poolAddress,
       [
-        depositedToken,
-        "0x765DE816845861e75A25fCA122bb6898B8B1282a",
-        "0xE273Ad7ee11dCfAA87383aD5977EE1504aC07568",
-        poolAddress,
+        // depositedToken,
+        // // "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", // Polygon
+        // "0xE273Ad7ee11dCfAA87383aD5977EE1504aC07568", // Celo
+        // poolAddress,
       ],
       {
         gasLimit: 2500000,

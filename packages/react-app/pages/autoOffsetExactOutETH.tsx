@@ -1,14 +1,18 @@
 import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
 import { useProvider, useSigner } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper2.json";
+import offsetHelper from "../abis/OffsetHelper.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
+import { useState } from "react";
 
 export default function AutoOffsetExactOutETH() {
-  const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92";
-  const depositedToken = "0x471EcE3750Da237f93B8E339c536989b8978a438"; // Celo
-  const amount = parseEther("1");
+  // const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
+  const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  const depositedToken = "0x122013fd7dF1C6F636a5bb8f03108E876548b455"; // Celo
+  const amount = parseEther("0.2");
+  const [neededAmount, setNeededAmount] = useState(0);
   const provider = useProvider();
   const { data: signer, isError } = useSigner();
 
@@ -43,14 +47,15 @@ export default function AutoOffsetExactOutETH() {
   );
 
   const approve = async () => {
-    const neededAmount = await calculateNeededAmount.write();
+    const amount = await calculateNeededAmount.write();
 
+    amount && setNeededAmount(amount);
     console.log(neededAmount);
     // amount = neededAmount;
 
     return await depositedTokenContract.approve(
       offsetHelper.address,
-      neededAmount
+      neededAmount || amount
     );
   };
 
@@ -64,6 +69,7 @@ export default function AutoOffsetExactOutETH() {
       [],
       {
         gasLimit: 2500000,
+        value: parseEther("0.1"),
       },
     ],
   });
@@ -73,10 +79,10 @@ export default function AutoOffsetExactOutETH() {
   const chainId = useChainId();
 
   const offset = async () => {
-    // const tx = await approve();
-    // await tx.wait();
+    const tx = await approve();
+    await tx.wait();
 
-    write && write();
+    neededAmount && write && write();
     console.log(chainId);
 
     console.log(isLoading);
