@@ -2,21 +2,18 @@ import {
   usePrepareContractWrite,
   useContractRead,
   useContractWrite,
-  useChainId,
-  useProvider,
   useSigner,
 } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper3.json";
+import offsetHelper from "../abis/OffsetHelper2.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
-import { useState } from "react";
 
 export default function AutoOffsetExactOutToken() {
-  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon
   // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
   // const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo
+  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
+  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon
   const amount = parseEther("0.1");
   const { data: signer, isError } = useSigner();
 
@@ -40,6 +37,8 @@ export default function AutoOffsetExactOutToken() {
   });
 
   const approve = async () => {
+    console.log(calculateNeededAmount.data);
+
     return await depositedTokenContract.approve(
       offsetHelper.address,
       calculateNeededAmount.data
@@ -66,7 +65,7 @@ export default function AutoOffsetExactOutToken() {
     const tx = await approve();
     await tx.wait();
 
-    write && write();
+    // write && write();
 
     console.log(isLoading);
     console.log(isSuccess);

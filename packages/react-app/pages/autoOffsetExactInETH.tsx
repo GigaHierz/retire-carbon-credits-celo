@@ -1,7 +1,7 @@
 import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
 import { useProvider, useSigner } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper3.json";
+import offsetHelper from "../abis/OffsetHelper2.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
 
@@ -35,7 +35,7 @@ export default function AutoOffsetExactInToken() {
     abi: offsetHelper.abi,
     functionName: "autoOffsetExactInETH",
     args: [
-      // depositedToken,
+      depositedToken,
       poolAddress,
       {
         gasLimit: 2500000,

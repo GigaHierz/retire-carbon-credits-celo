@@ -7,7 +7,7 @@ import {
   useSigner,
 } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper3.json";
+import offsetHelper from "../abis/OffsetHelper2.json";
 import {
   FormatTypes,
   Interface,
@@ -41,11 +41,7 @@ export default function AutoOffsetExactOutETH() {
     address: offsetHelper.address,
     abi: offsetHelper.abi,
     functionName: "calculateNeededETHAmount",
-    args: [
-      // depositedToken,
-      poolAddress,
-      amount,
-    ],
+    args: [depositedToken, poolAddress, amount],
   });
 
   const approve = async () => {
@@ -60,8 +56,9 @@ export default function AutoOffsetExactOutETH() {
     abi: offsetHelper.abi,
     functionName: "autoOffsetExactOutETH",
     args: [
+      depositedToken,
       poolAddress,
-      parseEther("0.000000000001"),
+      amount,
       {
         gasLimit: 2500000,
       },

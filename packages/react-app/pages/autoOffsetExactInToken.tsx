@@ -1,17 +1,15 @@
-import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
-import { useProvider, useSigner } from "wagmi";
+import { usePrepareContractWrite, useContractWrite, useSigner } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper3.json";
+import offsetHelper from "../abis/OffsetHelper2.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
 
 export default function AutoOffsetExactInToken() {
-  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
   // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
   // const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo
+  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
   const amount = parseEther("0.1");
-  const provider = useProvider();
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token
@@ -42,21 +40,17 @@ export default function AutoOffsetExactInToken() {
       poolAddress,
       {
         gasLimit: 2500000,
-        value: "0x0",
       },
     ],
   });
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
-  const chainId = useChainId();
-
   const offset = async () => {
     const tx = await approve();
     await tx.wait();
 
     write && write();
-    console.log(chainId);
 
     console.log(isLoading);
     console.log(isSuccess);
