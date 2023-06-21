@@ -1,19 +1,28 @@
-import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
-import { useProvider, useSigner } from "wagmi";
+import {
+  usePrepareContractWrite,
+  useContractRead,
+  useContractWrite,
+  useChainId,
+  useProvider,
+  useSigner,
+} from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper.json";
-import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
+import offsetHelper from "../abis/OffsetHelper3.json";
+import {
+  FormatTypes,
+  Interface,
+  parseEther,
+  parseUnits,
+} from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
 import { useState } from "react";
 
 export default function AutoOffsetExactOutETH() {
-  // const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
-  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
-  const depositedToken = "0x122013fd7dF1C6F636a5bb8f03108E876548b455"; // Celo
-  const amount = parseEther("0.2");
-  const [neededAmount, setNeededAmount] = useState(0);
-  const provider = useProvider();
+  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
+  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
+  // const depositedToken = "0x122013fd7dF1C6F636a5bb8f03108E876548b455"; // Celo
+  const amount = parseEther("0.1");
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token
@@ -28,34 +37,21 @@ export default function AutoOffsetExactOutETH() {
   );
 
   // calculate the needed amount of ERC20 tokens to offset
-  const calculateNeededAmountConfig: any = usePrepareContractWrite({
+  const calculateNeededAmount: any = useContractRead({
     address: offsetHelper.address,
     abi: offsetHelper.abi,
     functionName: "calculateNeededETHAmount",
     args: [
+      // depositedToken,
       poolAddress,
       amount,
-      [],
-      {
-        gasLimit: 2500000,
-      },
     ],
   });
 
-  const calculateNeededAmount = useContractWrite(
-    calculateNeededAmountConfig.config
-  );
-
   const approve = async () => {
-    const amount = await calculateNeededAmount.write();
-
-    amount && setNeededAmount(amount);
-    console.log(neededAmount);
-    // amount = neededAmount;
-
     return await depositedTokenContract.approve(
       offsetHelper.address,
-      neededAmount || amount
+      calculateNeededAmount.data
     );
   };
 
@@ -65,29 +61,23 @@ export default function AutoOffsetExactOutETH() {
     functionName: "autoOffsetExactOutETH",
     args: [
       poolAddress,
-      amount,
-      [],
+      parseEther("0.000000000001"),
       {
         gasLimit: 2500000,
-        value: parseEther("0.1"),
       },
     ],
   });
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
-  const chainId = useChainId();
-
   const offset = async () => {
     const tx = await approve();
     await tx.wait();
 
-    neededAmount && write && write();
-    console.log(chainId);
+    write && write();
 
     console.log(isLoading);
     console.log(isSuccess);
-    // console.log(write && write());
     console.log(data);
   };
 
