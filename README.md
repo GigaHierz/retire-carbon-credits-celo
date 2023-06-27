@@ -35,6 +35,8 @@ By the end of this tutorial, you will know
 
 We will use Celo-Composer to quick-start our web3 application. It already comes with several wallet integrations using rainbow-kit, wagmi for easy interactions with the blockchain and tailwind for styling.
 
+Make sure to use the right version of Celo Composer. The newer version is already upgraded to wagmi 1.xx. But the Toucan SDK is not yet. 
+
 ```
 npx @celo/celo-composer create
 ```
@@ -163,6 +165,7 @@ Now let's put that code in a function and add a button to trigger it, so we can 
 ```typescript
 import { parseEther } from "ethers/lib/utils.js";
 import ToucanClient from "toucan-sdk";
+import { useState } from "react";
 import { useProvider, useSigner } from "wagmi";
 
 export default function Home() {
