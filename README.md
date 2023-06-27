@@ -1,5 +1,3 @@
-
-
 # Retiring Carbon Credits on Celo using Toucan SDK
 
 Retire Carbon Credits on Celo using ToucanSDK
@@ -35,7 +33,7 @@ By the end of this tutorial, you will know
 
 We will use Celo-Composer to quick-start our web3 application. It already comes with several wallet integrations using rainbow-kit, wagmi for easy interactions with the blockchain and tailwind for styling.
 
-Make sure to use the right version of Celo Composer. The newer version is already upgraded to wagmi 1.xx. But the Toucan SDK is not yet. 
+Make sure to use the right version of Celo Composer. The newer version is already upgraded to wagmi 1.xx. But the Toucan SDK is not yet.
 
 ```
 npx @celo/celo-composer create
@@ -76,6 +74,93 @@ yarn run dev
 ```
 
 ---
+
+## Downgrading wagmi in the Celo-Compose
+
+Celo-Composer has already been upgraded to wagmi 1.0.xx, but this won't work with Toucan SDK. So, we need to downgrade the wagmi vesion:
+
+First we dongrade the wagmi to version `0.12.xx`.
+
+```json
+...
+"dependencies": {
+    ...
+    "@celo/rainbowkit-celo": "^0.11.0",
+    "@rainbow-me/rainbowkit": "^0.12.2",
+    "wagmi": "^0.12.2"
+}
+
+```
+
+Next we need to update connection configuration in the `_app.tsx` file:
+
+```typescript
+import "../styles/globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
+import type { AppProps } from "next/app";
+import {
+  connectorsForWallets,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
+import {
+  metaMaskWallet,
+  omniWallet,
+  walletConnectWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+
+// Import known recommended wallets
+import { Valora, CeloWallet, CeloDance } from "@celo/rainbowkit-celo/wallets";
+
+// Import CELO chain information
+import { Alfajores, Celo } from "@celo/rainbowkit-celo/chains";
+
+import Layout from "../components/Layout";
+
+const { chains, provider } = configureChains(
+  [Alfajores, Celo],
+  [
+    jsonRpcProvider({
+      rpc: (chain) => ({ http: chain.rpcUrls.default.http[0] }),
+    }),
+  ]
+);
+
+const connectors = connectorsForWallets([
+  {
+    groupName: "Recommended with CELO",
+    wallets: [
+      Valora({ chains }),
+      CeloWallet({ chains }),
+      CeloDance({ chains }),
+      metaMaskWallet({ chains }),
+      omniWallet({ chains }),
+      walletConnectWallet({ chains }),
+    ],
+  },
+]);
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+});
+
+function App({ Component, pageProps }: AppProps) {
+  return (
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider chains={chains} coolMode={true}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </RainbowKitProvider>
+    </WagmiConfig>
+  );
+}
+
+export default App;
+```
 
 ## Retire Carbon Credits
 
