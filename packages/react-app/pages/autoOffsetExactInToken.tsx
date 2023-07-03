@@ -6,9 +6,9 @@ import { ethers } from "ethers";
 
 export default function AutoOffsetExactInToken() {
   const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
-  const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo
+  const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo - cUSD
 
-  const amount = parseEther("0.1");
+  const amount = parseEther("0.0001");
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token
