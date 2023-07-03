@@ -6,8 +6,8 @@ import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
 
 export default function AutoOffsetExactInToken() {
-  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  const poolAddress = "0x7beCBA11618Ca63Ead5605DE235f6dD3b25c530E"; // Mumbai
+  const depositedToken = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; // Mumbai - WMATIC
   const amount = parseEther("0.1");
   const provider = useProvider();
   const { data: signer, isError } = useSigner();

@@ -7,8 +7,9 @@ import { ContractTransaction, ethers } from "ethers";
 export default function AutoOffsetExactInToken() {
   // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
   // const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
-  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
+  const poolAddress = "0x7beCBA11618Ca63Ead5605DE235f6dD3b25c530E"; // Mumbai
+  const depositedToken = "0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747"; // Mumbai - USDC
   const amount = parseEther("0.1");
   const { data: signer, isError } = useSigner();
 

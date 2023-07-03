@@ -18,8 +18,8 @@ import { ContractTransaction, ethers } from "ethers";
 import { useState } from "react";
 
 export default function AutoOffsetExactOutETH() {
-  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  const poolAddress = "0x7beCBA11618Ca63Ead5605DE235f6dD3b25c530E"; // Mumbai
+  const depositedToken = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; // Mumbai - WMATIC
   // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
   // const depositedToken = "0x122013fd7dF1C6F636a5bb8f03108E876548b455"; // Celo
   const amount = parseEther("0.1");
