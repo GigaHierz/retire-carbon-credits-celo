@@ -1,16 +1,13 @@
 import { usePrepareContractWrite, useContractWrite, useSigner } from "wagmi";
-
-import offsetHelper from "../abis/OffsetHelper2.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
-import { ContractTransaction, ethers } from "ethers";
+import { ethers } from "ethers";
+import offsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactInToken() {
-  // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
-  // const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo
-  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
-  const amount = parseEther("0.001");
+  // const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
+  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
+  const amount = parseEther("0.0001");
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token

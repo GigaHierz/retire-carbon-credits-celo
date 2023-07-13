@@ -4,14 +4,14 @@ import {
   useContractWrite,
   useSigner,
 } from "wagmi";
-
-import offsetHelper from "../abis/OffsetHelper2.json";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
-import { ContractTransaction, ethers } from "ethers";
+import { ethers } from "ethers";
+import offsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactOutToken() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
   const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
+
   const amount = parseEther("0.001");
   const { data: signer, isError } = useSigner();
 

@@ -8,7 +8,7 @@ import { ContractTransaction, ethers } from "ethers";
 
 export default function AutoOffsetPoolToken() {
   const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92";
-  const amount = parseEther("1");
+  const amount = parseEther("0.001");
   const provider = useProvider();
   const { data: signer, isError } = useSigner();
   const toucan = new ToucanClient("celo", provider);
