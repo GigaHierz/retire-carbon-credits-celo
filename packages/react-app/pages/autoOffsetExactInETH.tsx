@@ -8,7 +8,7 @@ import { ContractTransaction, ethers } from "ethers";
 export default function AutoOffsetExactInToken() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
   const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
-  const amount = parseEther("0.1");
+  const amount = parseEther("0.001");
   const provider = useProvider();
   const { data: signer, isError } = useSigner();
 

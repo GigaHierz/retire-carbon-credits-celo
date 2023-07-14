@@ -20,9 +20,8 @@ import { useState } from "react";
 export default function AutoOffsetExactOutETH() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
   const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
-  // const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
-  // const depositedToken = "0x122013fd7dF1C6F636a5bb8f03108E876548b455"; // Celo
-  const amount = parseEther("0.1");
+
+  const amount = parseEther("0.001");
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token
@@ -44,7 +43,7 @@ export default function AutoOffsetExactOutETH() {
     args: [
       // depositedToken,
       poolAddress,
-      amount,
+      parseEther("0.0011"),
     ],
   });
 
@@ -61,9 +60,9 @@ export default function AutoOffsetExactOutETH() {
     functionName: "autoOffsetExactOutETH",
     args: [
       poolAddress,
-      parseEther("0.000000000001"),
+      amount,
       {
-        gasLimit: 2500000,
+        gasLimit: 4000000,
       },
     ],
   });
