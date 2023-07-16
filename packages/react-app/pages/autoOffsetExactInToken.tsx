@@ -7,6 +7,8 @@ import { ethers } from "ethers";
 export default function AutoOffsetExactInToken() {
   const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92"; // Celo
   const depositedToken = "0x765DE816845861e75A25fCA122bb6898B8B1282a"; // Celo - cUSD
+  // const depositedToken = "0x122013fd7dF1C6F636a5bb8f03108E876548b455"; // Celo - WETH
+  // const depositedToken = "0x471EcE3750Da237f93B8E339c536989b8978a438"; // Celo - CELO
 
   const amount = parseEther("0.0001");
   const { data: signer, isError } = useSigner();
@@ -35,8 +37,8 @@ export default function AutoOffsetExactInToken() {
     functionName: "autoOffsetExactInToken",
     args: [
       depositedToken,
-      amount,
       poolAddress,
+      amount,
       {
         gasLimit: 2500000,
       },
