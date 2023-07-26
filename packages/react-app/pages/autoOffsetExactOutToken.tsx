@@ -36,6 +36,7 @@ export default function AutoOffsetExactOutToken() {
 
   const approve = async () => {
     console.log(calculateNeededAmount.data);
+    console.log(depositedToken, poolAddress, amount);
 
     return await depositedTokenContract.approve(
       offsetHelper.address,

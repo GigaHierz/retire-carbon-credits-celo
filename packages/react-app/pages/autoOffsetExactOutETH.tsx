@@ -59,6 +59,7 @@ export default function AutoOffsetExactOutETH() {
       amount,
       {
         gasLimit: 2500000,
+        value: calculateNeededAmount.data,
       },
     ],
   });
