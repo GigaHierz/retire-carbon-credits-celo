@@ -15,8 +15,8 @@ import offsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactOutETH() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
-  // const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH - route is wrong
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
+  const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH - route is wrong
 
   const amount = parseUnits("0.001");
   const { data: signer, isError } = useSigner();
