@@ -21,7 +21,6 @@ import { Valora, CeloWallet, CeloDance } from "@celo/rainbowkit-celo/wallets";
 import { Alfajores, Celo } from "@celo/rainbowkit-celo/chains";
 
 import Layout from "../components/Layout";
-import { log } from "console";
 
 const { chains, provider } = configureChains(
   [Alfajores, Celo, polygonMumbai, polygon],
