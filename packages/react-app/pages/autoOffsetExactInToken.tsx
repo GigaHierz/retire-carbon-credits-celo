@@ -2,13 +2,24 @@ import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
 import { useProvider, useSigner } from "wagmi";
 
 import offsetHelper from "../abis/OffsetHelper3.json";
-import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
-import { ContractTransaction, ethers } from "ethers";
+import {
+  FormatTypes,
+  Interface,
+  parseEther,
+  parseUnits,
+} from "ethers/lib/utils";
+import { BigNumber, ContractTransaction, ethers } from "ethers";
 
 export default function AutoOffsetExactInToken() {
+  function parseUSDC(s: string): BigNumber {
+    return parseUnits(s, 6);
+  }
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
-  const amount = parseEther("0.001");
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon
+  // const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH
+  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon -  USDC
+  // const amount = parseEther("0.0001");
+  const amount = parseUSDC("0.0001");
   const provider = useProvider();
   const { data: signer, isError } = useSigner();
 
@@ -40,7 +51,6 @@ export default function AutoOffsetExactInToken() {
       poolAddress,
       {
         gasLimit: 2500000,
-        value: "0x0",
       },
     ],
   });
