@@ -14,7 +14,8 @@ import { useState } from "react";
 
 export default function AutoOffsetExactOutToken() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon
+  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
 
   const amount = parseEther("0.001");
   const { data: signer, isError } = useSigner();
@@ -41,7 +42,7 @@ export default function AutoOffsetExactOutToken() {
   const approve = async () => {
     return await depositedTokenContract.approve(
       offsetHelper.address,
-      calculateNeededAmount.data
+      parseEther("0.003")
     );
   };
 
@@ -52,9 +53,9 @@ export default function AutoOffsetExactOutToken() {
     args: [
       depositedToken,
       poolAddress,
-      amount,
+      parseEther("0.003"),
       {
-        gasLimit: 2500000,
+        gasLimit: 4000000,
       },
     ],
   });
