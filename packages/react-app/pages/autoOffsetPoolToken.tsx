@@ -2,7 +2,7 @@ import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
 import ToucanClient from "toucan-sdk";
 import { useProvider, useSigner } from "wagmi";
 
-import offsetHelper from "../abis/OffsetHelper.json";
+import offsetHelper from "../abis/OffsetHelper2.json";
 import { parseEther } from "ethers/lib/utils";
 import { ContractTransaction, ethers } from "ethers";
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ToucanClient, { UserRetirementsResponse } from "toucan-sdk";
-import { useAccount } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
+import offsetHelper from "../abis/OffsetHelper2.json";
 
 export default function List() {
   const toucan = new ToucanClient("alfajores");
@@ -8,6 +9,13 @@ export default function List() {
 
   const [retirements, setRetirements] = useState<UserRetirementsResponse[]>([]);
 
+  // show eligible tokens to offset
+  const { data }: any = useContractRead({
+    address: offsetHelper.address,
+    abi: offsetHelper.abi,
+    functionName: "showEligibleTokens",
+    args: [],
+  });
   const getUserRetirements = async () => {
     const result =
       address && (await toucan.fetchUserRetirements(address?.toLowerCase()));
@@ -15,8 +23,11 @@ export default function List() {
   };
 
   useEffect(() => {
+    console.log("hi");
+    console.log(data);
+
     getUserRetirements();
-  });
+  }, []);
 
   return (
     <div>
