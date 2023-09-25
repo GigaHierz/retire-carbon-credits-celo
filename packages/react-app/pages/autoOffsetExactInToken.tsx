@@ -34,8 +34,8 @@ export default function AutoOffsetExactInToken() {
     functionName: "autoOffsetExactInToken",
     args: [
       depositedToken,
-      amount,
       poolAddress,
+      amount,
       {
         gasLimit: 2500000,
       },
@@ -64,12 +64,12 @@ export default function AutoOffsetExactInToken() {
       {isSuccess && (
         <div>
           <a
-            href={`https://celoscan.io/${JSON.stringify(data.hash)}`}
+            href={`https://celoscan.io/${JSON.stringify(data?.hash)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
             {" "}
-            Transaction: {JSON.stringify(data.hash)}
+            Transaction: {JSON.stringify(data?.hash)}
           </a>{" "}
         </div>
       )}

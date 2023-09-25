@@ -3,10 +3,11 @@ import {
   useContractRead,
   useContractWrite,
   useSigner,
+  useProvider,
 } from "wagmi";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import offsetHelper from "../abis/OffsetHelper2.json";
+import OffsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactOutToken() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
@@ -14,8 +15,14 @@ export default function AutoOffsetExactOutToken() {
   const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
   // const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH
 
-  const amount = parseEther("0.001");
+  const amount = parseEther("0.00001");
   const { data: signer, isError } = useSigner();
+  const provider = useProvider();
+  const offsetHelper = new ethers.Contract(
+    OffsetHelper.address,
+    OffsetHelper.abi,
+    provider
+  );
 
   // create contract for approve function of the ERC20 token
   const iface = new Interface(
@@ -28,56 +35,78 @@ export default function AutoOffsetExactOutToken() {
     signer
   );
 
-  // calculate the needed amount of ERC20 tokens to offset
-  const calculateNeededAmount: any = useContractRead({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "calculateNeededTokenAmount",
-    args: [depositedToken, poolAddress, amount],
-  });
+  const offset = async () => {
+    console.log("offset");
 
-  const approve = async () => {
-    console.log(calculateNeededAmount.data);
-    console.log(depositedToken, poolAddress, amount);
+    const usdcCost = await offsetHelper.calculateNeededTokenAmount(
+      depositedToken,
+      poolAddress,
+      amount
+    );
 
-    return await depositedTokenContract.approve(
-      offsetHelper.address,
-      calculateNeededAmount.data
+    console.log("usdcCost", usdcCost);
+
+    // then we use the autoOffset function to retire 1.0 TCO2 from UsSDC using NCT/BCT
+    await (
+      await depositedTokenContract.approve(offsetHelper.address, usdcCost)
+    ).wait();
+    await offsetHelper.autoOffsetExactOutToken(
+      depositedToken,
+      poolAddress,
+      amount
     );
   };
 
-  const { config } = usePrepareContractWrite({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "autoOffsetExactOutToken",
-    args: [
-      depositedToken,
-      poolAddress,
-      amount,
-      {
-        gasLimit: 2500000,
-      },
-    ],
-  });
+  // // calculate the needed amount of ERC20 tokens to offset
+  // const calculateNeededAmount: any = useContractRead({
+  //   address: offsetHelper.address,
+  //   abi: offsetHelper.abi,
+  //   functionName: "calculateNeededTokenAmount",
+  //   args: [depositedToken, poolAddress, amount],
+  // });
 
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
+  // const approve = async () => {
+  //   console.log(calculateNeededAmount.data);
+  //   console.log(depositedToken, poolAddress, amount);
 
-  const offset = async () => {
-    const tx = await approve();
-    await tx.wait();
+  //   return await depositedTokenContract.approve(
+  //     offsetHelper.address,
+  //     calculateNeededAmount.data || parseEther("0.00003")
+  //   );
+  // };
 
-    write && write();
+  // const { config } = usePrepareContractWrite({
+  //   address: offsetHelper.address,
+  //   abi: offsetHelper.abi,
+  //   functionName: "autoOffsetExactOutToken",
+  //   args: [
+  //     depositedToken,
+  //     poolAddress,
+  //     calculateNeededAmount.data || parseEther("0.00001"),
+  //     {
+  //       gasLimit: 2500000,
+  //     },
+  //   ],
+  // });
 
-    console.log(isLoading);
-    console.log(isSuccess);
-    console.log(data);
-  };
+  // const { data, isLoading, isSuccess, write } = useContractWrite(config);
+
+  // const offset = async () => {
+  //   const tx = await approve();
+  //   await tx.wait();
+
+  //   write && write();
+
+  //   console.log(isLoading);
+  //   console.log(isSuccess);
+  //   console.log(data);
+  // };
 
   return (
     <div>
       <button onClick={() => offset?.()}>offset</button>
-      {isLoading && <div>Check Wallet</div>}
-      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      {/* {isLoading && <div>Check Wallet</div>}
+      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
     </div>
   );
 }
