@@ -9,6 +9,7 @@ import {
   parseUnits,
 } from "ethers/lib/utils";
 import { BigNumber, ethers } from "ethers";
+import { log } from "console";
 
 export default function AutoOffsetExactInToken() {
   function parseUSDC(s: string): BigNumber {
@@ -60,6 +61,8 @@ export default function AutoOffsetExactInToken() {
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
   const offset = async () => {
+    console.log("offset");
+
     const tx = await approve();
     await tx.wait();
 
