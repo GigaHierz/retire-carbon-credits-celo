@@ -1,14 +1,13 @@
 import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
-import { useProvider, useSigner } from "wagmi";
-
-import offsetHelper from "../abis/OffsetHelper3.json";
+import { useSigner } from "wagmi";
+import { BigNumber, ethers } from "ethers";
 import {
   FormatTypes,
   Interface,
   parseEther,
   parseUnits,
 } from "ethers/lib/utils";
-import { BigNumber, ContractTransaction, ethers } from "ethers";
+import offsetHelper from "../abis/OffsetHelper3.json";
 
 export default function AutoOffsetExactInToken() {
   function parseUSDC(s: string): BigNumber {
@@ -20,7 +19,6 @@ export default function AutoOffsetExactInToken() {
   const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon -  USDC
   // const amount = parseEther("0.0001");
   const amount = parseUSDC("0.0001");
-  const provider = useProvider();
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token
@@ -57,19 +55,11 @@ export default function AutoOffsetExactInToken() {
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
-  const chainId = useChainId();
-
   const offset = async () => {
     const tx = await approve();
     await tx.wait();
 
     write && write();
-    console.log(chainId);
-
-    console.log(isLoading);
-    console.log(isSuccess);
-    // console.log(write && write());
-    console.log(data);
   };
 
   return (
@@ -80,12 +70,12 @@ export default function AutoOffsetExactInToken() {
       {isSuccess && (
         <div>
           <a
-            href={`https://celoscan.io/${JSON.stringify(data.hash)}`}
+            href={`https://celoscan.io/${JSON.stringify(data?.hash)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
             {" "}
-            Transaction: {JSON.stringify(data.hash)}
+            Transaction: {JSON.stringify(data?.hash)}
           </a>{" "}
         </div>
       )}

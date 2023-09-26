@@ -1,29 +1,20 @@
-import {
-  usePrepareContractWrite,
-  useContractRead,
-  useContractWrite,
-  useChainId,
-  useProvider,
-  useSigner,
-} from "wagmi";
-
-import offsetHelper from "../abis/OffsetHelper3.json";
+import { useSigner } from "wagmi";
+import { BigNumber, ethers } from "ethers";
 import {
   FormatTypes,
   Interface,
   parseEther,
   parseUnits,
 } from "ethers/lib/utils";
-import { BigNumber, ContractTransaction, ethers } from "ethers";
-import { useState } from "react";
+
+import OffsetHelper from "../abis/OffsetHelper3.json";
 
 function parseUSDC(s: string): BigNumber {
   return parseUnits(s, 6);
 }
 
 export default function AutoOffsetExactOutToken() {
-  const poolAddress =
-    "0xD838290e877E010xD838290e877E0188a4A44700463419ED96c1610788a4A44700463419ED96c16107"; // Polygon
+  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
   const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
   // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
 
@@ -31,6 +22,11 @@ export default function AutoOffsetExactOutToken() {
   // const amount = parseUSDC("0.0001");
 
   const { data: signer, isError } = useSigner();
+  const offsetHelper = new ethers.Contract(
+    OffsetHelper.address,
+    OffsetHelper.abi,
+    signer
+  );
 
   // create contract for approve function of the ERC20 token
   const iface = new Interface(
@@ -43,53 +39,31 @@ export default function AutoOffsetExactOutToken() {
     signer
   );
 
-  // calculate the needed amount of ERC20 tokens to offset
-  const calculateNeededAmount: any = useContractRead({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "calculateNeededTokenAmount",
-    args: [depositedToken, poolAddress, amount],
-  });
-
-  const approve = async () => {
-    return await depositedTokenContract.approve(
-      offsetHelper.address,
-      calculateNeededAmount.data || parseEther("0.0001")
+  const offset = async () => {
+    const amountOut = await offsetHelper.calculateNeededTokenAmount(
+      depositedToken,
+      poolAddress,
+      amount
     );
-  };
 
-  const { config } = usePrepareContractWrite({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "autoOffsetExactOutToken",
-    args: [
+    await (
+      await depositedTokenContract.approve(offsetHelper.address, amountOut)
+    ).wait();
+
+    await offsetHelper.autoOffsetExactOutToken(
       depositedToken,
       poolAddress,
       amount,
       {
-        gasLimit: 4000000,
-      },
-    ],
-  });
-
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
-
-  const offset = async () => {
-    const tx = await approve();
-    await tx.wait();
-
-    write && write();
-
-    console.log(isLoading);
-    console.log(isSuccess);
-    console.log(data);
+        gasLimit: 5000000,
+      }
+    );
+    console.log(amountOut);
   };
 
   return (
     <div>
-      <button onClick={() => offset?.()}>offset</button>
-      {isLoading && <div>Check Wallet</div>}
-      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      <button onClick={() => offset()}>offset</button>
     </div>
   );
 }

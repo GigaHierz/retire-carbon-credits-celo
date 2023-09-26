@@ -1,13 +1,7 @@
-import {
-  usePrepareContractWrite,
-  useContractRead,
-  useContractWrite,
-  useSigner,
-} from "wagmi";
-
-import offsetHelper from "../abis/OffsetHelper3.json";
-import { parseEther } from "ethers/lib/utils";
+import { useSigner } from "wagmi";
 import { ethers } from "ethers";
+import { parseEther } from "ethers/lib/utils";
+import offsetHelper from "../abis/OffsetHelper3.json";
 
 export default function AutoOffsetExactOutETH() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
@@ -21,7 +15,7 @@ export default function AutoOffsetExactOutETH() {
     signer
   );
 
-  const calculateAmount = async () => {
+  const offset = async () => {
     const amountOut = await contract.calculateNeededETHAmount(
       poolAddress,
       amount
@@ -32,19 +26,6 @@ export default function AutoOffsetExactOutETH() {
       value: amountOut,
     });
     console.log(amountOut);
-  };
-
-  const offset = async () => {
-    calculateAmount();
-    console.log("offset");
-    // console.log(calculateNeededAmount);
-    // console.log(calculateNeededAmount.data);
-
-    // write && write();
-
-    // console.log(isLoading);
-    // console.log(isSuccess);
-    // console.log(data);
   };
 
   return (
