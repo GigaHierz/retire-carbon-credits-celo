@@ -8,16 +8,28 @@ import {
 } from "wagmi";
 
 import offsetHelper from "../abis/OffsetHelper3.json";
-import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
-import { ContractTransaction, ethers } from "ethers";
+import {
+  FormatTypes,
+  Interface,
+  parseEther,
+  parseUnits,
+} from "ethers/lib/utils";
+import { BigNumber, ContractTransaction, ethers } from "ethers";
 import { useState } from "react";
 
+function parseUSDC(s: string): BigNumber {
+  return parseUnits(s, 6);
+}
+
 export default function AutoOffsetExactOutToken() {
-  const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
+  const poolAddress =
+    "0xD838290e877E010xD838290e877E0188a4A44700463419ED96c1610788a4A44700463419ED96c16107"; // Polygon
   const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
   // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
 
   const amount = parseEther("0.001");
+  // const amount = parseUSDC("0.0001");
+
   const { data: signer, isError } = useSigner();
 
   // create contract for approve function of the ERC20 token
@@ -42,7 +54,7 @@ export default function AutoOffsetExactOutToken() {
   const approve = async () => {
     return await depositedTokenContract.approve(
       offsetHelper.address,
-      parseEther("0.003")
+      calculateNeededAmount.data || parseEther("0.0001")
     );
   };
 
@@ -53,7 +65,7 @@ export default function AutoOffsetExactOutToken() {
     args: [
       depositedToken,
       poolAddress,
-      parseEther("0.003"),
+      amount,
       {
         gasLimit: 4000000,
       },
