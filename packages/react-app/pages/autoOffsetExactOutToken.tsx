@@ -11,8 +11,8 @@ import OffsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactOutToken() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  // const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
-  const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
+  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
+  // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
   // const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH
 
   const amount = parseEther("0.00001");
@@ -37,6 +37,9 @@ export default function AutoOffsetExactOutToken() {
 
   const offset = async () => {
     console.log("offset");
+    console.log("depositedToken", depositedToken);
+    console.log("poolAddress", poolAddress);
+    console.log("amount", amount);
 
     const usdcCost = await offsetHelper.calculateNeededTokenAmount(
       depositedToken,
@@ -47,14 +50,14 @@ export default function AutoOffsetExactOutToken() {
     console.log("usdcCost", usdcCost);
 
     // then we use the autoOffset function to retire 1.0 TCO2 from UsSDC using NCT/BCT
-    await (
-      await depositedTokenContract.approve(offsetHelper.address, usdcCost)
-    ).wait();
-    await offsetHelper.autoOffsetExactOutToken(
-      depositedToken,
-      poolAddress,
-      amount
-    );
+    // await (
+    //   await depositedTokenContract.approve(offsetHelper.address, usdcCost)
+    // ).wait();
+    // await offsetHelper.autoOffsetExactOutToken(
+    //   depositedToken,
+    //   poolAddress,
+    //   amount
+    // );
   };
 
   // // calculate the needed amount of ERC20 tokens to offset
