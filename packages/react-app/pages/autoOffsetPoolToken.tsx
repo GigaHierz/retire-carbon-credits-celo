@@ -1,10 +1,8 @@
 import { usePrepareContractWrite, useContractWrite, useChainId } from "wagmi";
 import ToucanClient from "toucan-sdk";
 import { useProvider, useSigner } from "wagmi";
-
-import offsetHelper from "../abis/OffsetHelper.json";
 import { parseEther } from "ethers/lib/utils";
-import { ContractTransaction, ethers } from "ethers";
+import offsetHelper from "../abis/OffsetHelper.json";
 
 export default function AutoOffsetPoolToken() {
   const poolAddress = "0x02De4766C272abc10Bc88c220D214A26960a7e92";
@@ -33,20 +31,12 @@ export default function AutoOffsetPoolToken() {
   });
 
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
-  const chainId = useChainId();
 
   const offset = async () => {
-    console.log("offset");
     const tx = await approve();
     await tx.wait();
 
     write && write();
-    console.log(chainId);
-
-    console.log(isLoading);
-    console.log(isSuccess);
-    // console.log(write && write());
-    console.log(data);
   };
 
   return (
