@@ -21,43 +21,28 @@ export default function AutoOffsetExactOutETH() {
   const amount = parseUnits("0.001");
   const { data: signer, isError } = useSigner();
 
-  // calculate the needed amount of ERC20 tokens to offset
-  const calculateNeededAmount: any = useContractRead({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "calculateNeededETHAmount",
-    args: [depositedToken, poolAddress, amount],
-  });
+  const contract = new ethers.Contract(
+    offsetHelper.address,
+    offsetHelper.abi,
+    signer
+  );
 
-  const { config } = usePrepareContractWrite({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "autoOffsetExactOutETH",
-    args: [
+  const calculateAmount = async () => {
+    const amountOut = await contract.calculateNeededETHAmount(
       poolAddress,
-      amount,
-      {
-        gasLimit: 2500000,
-        value: calculateNeededAmount.data,
-      },
-    ],
-  });
+      amount
+    );
 
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
-
-  const offset = async () => {
-    write && write();
-
-    console.log(isLoading);
-    console.log(isSuccess);
-    console.log(data);
+    await contract.autoOffsetExactOutETH(poolAddress, amount, {
+      gasLimit: 5000000,
+      value: amountOut,
+    });
+    console.log(amountOut);
   };
 
   return (
     <div>
-      <button onClick={() => offset?.()}>offset</button>
-      {isLoading && <div>Check Wallet</div>}
-      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      <button onClick={() => calculateAmount?.()}>offset</button>
     </div>
   );
 }
