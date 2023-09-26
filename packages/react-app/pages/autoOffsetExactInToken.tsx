@@ -1,6 +1,7 @@
-import { usePrepareContractWrite, useContractWrite, useSigner } from "wagmi";
+import { useSigner } from "wagmi";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
+import { useRef } from "react";
 import offsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactInToken() {
@@ -9,6 +10,7 @@ export default function AutoOffsetExactInToken() {
   const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
   const amount = parseEther("0.0001");
   const { data: signer, isError } = useSigner();
+  const transaction = useRef(null);
 
   // create contract for approve function of the ERC20 token
   const iface = new Interface(
@@ -21,58 +23,32 @@ export default function AutoOffsetExactInToken() {
     signer
   );
 
-  console.log(offsetHelper.address);
-  console.log(amount);
+  const contract = new ethers.Contract(
+    offsetHelper.address,
+    offsetHelper.abi,
+    signer
+  );
 
-  const approve = async () => {
-    return await depositedTokenContract.approve(offsetHelper.address, amount);
-  };
+  const offset = async () => {
+    await (
+      await depositedTokenContract.approve(offsetHelper.address, amount)
+    ).wait();
 
-  const { config } = usePrepareContractWrite({
-    address: offsetHelper.address,
-    abi: offsetHelper.abi,
-    functionName: "autoOffsetExactInToken",
-    args: [
+    const tx = await contract.autoOffsetExactInToken(
       depositedToken,
       poolAddress,
       amount,
       {
-        gasLimit: 2500000,
-      },
-    ],
-  });
-
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
-
-  const offset = async () => {
-    const tx = await approve();
-    await tx.wait();
-
-    write && write();
-
-    console.log(isLoading);
-    console.log(isSuccess);
-    // console.log(write && write());
-    console.log(data);
+        gasLimit: 5000000,
+      }
+    );
+    transaction.current = tx;
+    console.log(tx);
   };
 
   return (
     <div>
-      <button onClick={() => offset?.()}>offset</button>
-      {isLoading && <div>Check Wallet</div>}
-      <a href="" target="_blank" rel="noopener noreferrer"></a>
-      {isSuccess && (
-        <div>
-          <a
-            href={`https://celoscan.io/${JSON.stringify(data?.hash)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {" "}
-            Transaction: {JSON.stringify(data?.hash)}
-          </a>{" "}
-        </div>
-      )}
+      <button onClick={offset}>offset</button>
     </div>
   );
 }

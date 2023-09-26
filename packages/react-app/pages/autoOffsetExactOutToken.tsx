@@ -1,21 +1,20 @@
-import { useSigner, useProvider } from "wagmi";
+import { useSigner } from "wagmi";
 import { FormatTypes, Interface, parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import OffsetHelper from "../abis/OffsetHelper2.json";
 
 export default function AutoOffsetExactOutToken() {
   const poolAddress = "0xD838290e877E0188a4A44700463419ED96c16107"; // Polygon
-  // const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
+  const depositedToken = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // Polygon - USDC
   // const depositedToken = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"; // Polygon - WMATIC
-  const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH
+  // const depositedToken = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // Polygon - WETH
 
   const amount = parseEther("0.00001");
   const { data: signer, isError } = useSigner();
-  const provider = useProvider();
   const offsetHelper = new ethers.Contract(
     OffsetHelper.address,
     OffsetHelper.abi,
-    provider
+    signer
   );
 
   // create contract for approve function of the ERC20 token
@@ -26,20 +25,15 @@ export default function AutoOffsetExactOutToken() {
   const depositedTokenContract = new ethers.Contract(
     depositedToken,
     iface,
-    provider
+    signer
   );
 
   const offset = async () => {
-    console.log("oofset");
-
-    const amountOut = await (
-      await offsetHelper.calculateNeededTokenAmount(
-        depositedToken,
-        poolAddress,
-        amount
-      )
-    ).wait();
-    console.log("amountOut", amountOut);
+    const amountOut = await offsetHelper.calculateNeededTokenAmount(
+      depositedToken,
+      poolAddress,
+      amount
+    );
 
     await (
       await depositedTokenContract.approve(offsetHelper.address, amountOut)
@@ -53,7 +47,6 @@ export default function AutoOffsetExactOutToken() {
         gasLimit: 5000000,
       }
     );
-    console.log(amountOut);
   };
 
   return (

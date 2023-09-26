@@ -29,7 +29,7 @@ const { chains, provider } = configureChains(
     jsonRpcProvider({
       rpc: (chain) =>
         chain.id === 80001 || chain.id === 137
-          ? { http: "https://matic-mainnet.chainstacklabs.com" }
+          ? { http: "https://rpc.ankr.com/polygon" }
           : { http: "https://forno.celo.org" },
     }),
   ]
